@@ -1,0 +1,101 @@
+/* 
+  styles.css
+  Adjust colors, sizes, or images as needed
+*/
+
+/* Full-screen gradient background */
+html, body {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  font-family: 'Orbitron', sans-serif;
+  background: linear-gradient(135deg, #2c0a59 0%, #62317c 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  color: #ffffff;
+}
+
+/* The swirl shape on the right */
+.futuristic-shape {
+  position: absolute;
+  top: 5%;
+  right: 5%;
+  width: 350px;
+  max-width: 40%;
+  z-index: 1;
+  pointer-events: none; /* Let clicks pass through to anything below */
+}
+
+/* Center panel that holds the text & input bubble */
+.center-panel {
+  position: relative;
+  z-index: 2; /* Above the swirl image */
+  width: 60%; /* Adjust to taste; narrower for more empty space on right */
+  max-width: 600px;
+  margin-left: 5%; /* push it a bit from the left edge */
+}
+
+/* The big prompt text */
+.prompt-text {
+  font-size: 2.1rem;
+  font-weight: 400;
+  margin: 0 0 2rem 0;
+  max-width: 500px;
+  line-height: 1.3;
+  color: #f0f0f0;
+}
+
+/* The bubble for user input row */
+.input-bubble {
+  display: flex;
+  align-items: center;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 30px;
+  backdrop-filter: blur(10px);
+  box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+  padding: 10px 20px;
+  max-width: 500px;
+}
+
+/* The text field inside the bubble */
+.user-text {
+  flex: 1;
+  background: transparent;
+  border: none;
+  outline: none;
+  color: #ffffff;
+  font-size: 1.2rem;
+  margin-right: 10px;
+}
+
+/* Container for mic/send icons */
+.icon-row {
+  display: flex;
+  gap: 10px;
+}
+
+/* The icon buttons */
+.icon-button {
+  border: none;
+  background: none;
+  cursor: pointer;
+  transition: transform 0.2s;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.icon-button:hover {
+  transform: scale(1.1);
+}
+
+/* The actual icon images */
+.button-icon {
+  width: 30px;
+  height: 30px;
+  object-fit: contain;
+  filter: drop-shadow(0 0 2px rgba(0,0,0,0.3));
+}
