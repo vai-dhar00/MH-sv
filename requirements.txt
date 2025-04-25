@@ -1,0 +1,26 @@
+# Flask web framework
+Flask==3.0.3
+
+# Flask-SocketIO for real-time communication
+Flask-SocketIO==5.3.5
+
+# OpenAI Python client library for Assistant API calls
+openai==1.64.0
+
+# Requests for HTTP requests (used for Serper API calls)
+requests==2.28.2
+
+# python-socketio (if not already installed by Flask-SocketIO)
+python-socketio==5.7.2
+
+# For voice input (Speech-to-Text)
+SpeechRecognition==3.8.1
+
+# PyAudio (for capturing audio via microphone)
+PyAudio==0.2.13
+
+# For voice output (Text-to-Speech)
+gTTS==2.2.3
+
+# (Optional) Eventlet for asynchronous operation with SocketIO; can improve performance
+eventlet==0.33.0

@@ -1,0 +1,25 @@
+{
+    "openai_api_key": "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",
+    "assistant_id": "asst_ZJDJQcBNIhcX61KRjFlMee7r",
+    "bot_name": "Astro",
+    "theme": {
+        "default_mode": "light",
+        "colors": {
+            "light": {
+                "background": "#ffffff",
+                "text": "#000000"
+            },
+            "dark": {
+                "background": "#121212",
+                "text": "#ffffff"
+            }
+        }
+    },
+    "features": {
+        "enable_typing_indicator": true,
+        "enable_read_receipts": true,
+        "enable_sound_notifications": true,
+        "max_message_length": 500,
+        "file_upload_limit_mb": 5
+    }
+}
