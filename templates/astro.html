@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Astro - Next-Gen Mental Health Chatbot</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <!-- Futuristic Google Font -->
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&display=swap" rel="stylesheet">
+  
+  <!-- Spline Viewer Script -->
+  <script type="module" src="https://unpkg.com/@splinetool/viewer@1.9.82/build/spline-viewer.js"></script>
+  
+  <style>
+    /* Reset */
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+    html, body {
+      height: 100%;
+      font-family: 'Orbitron', sans-serif;
+    }
+    /* Full-screen dark gradient background */
+    body {
+      background: linear-gradient(135deg, #3c1d5e 0%, #2b316d 100%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+      color: #ffffff;
+    }
+    /* Main Container */
+    .container {
+      position: relative;
+      width: 90%;
+      max-width: 1200px;
+      height: 70%;
+      min-height: 500px;
+      display: flex;
+      align-items: center;
+      justify-content: flex-start;
+    }
+    /* Spline Viewer: Replace the swirl shape */
+    spline-viewer.spline-viewer {
+      position: absolute;
+      right: 0;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 450px;
+      height: 450px;
+      border: none;
+      pointer-events: none;
+    }
+    /* Left Panel: Holds the bot bubble and input bubble */
+    .left-panel {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      z-index: 2;
+      max-width: 600px;
+      padding: 20px;
+    }
+    /* Bot Bubble: Dynamic text that updates */
+    .bot-bubble {
+      font-size: 2.4rem;
+      font-weight: 400;
+      line-height: 1.2;
+      margin-bottom: 40px;
+      color: #f0f0f0;
+      background: rgba(255, 255, 255, 0.15);
+      backdrop-filter: blur(14px);
+      border-radius: 20px;
+      padding: 20px 25px;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+      min-height: 80px;
+      display: flex;
+      align-items: center;
+    }
+    /* Fade-in animation for dynamic text */
+    @keyframes textFadeIn {
+      from { opacity: 0; transform: translateX(-20px); }
+      to   { opacity: 1; transform: translateX(0); }
+    }
+    .fade-in {
+      animation: textFadeIn 2s ease-out;
+    }
+    /* Input Bubble */
+    .input-bubble {
+      display: flex;
+      align-items: center;
+      background: rgba(255, 255, 255, 0.2);
+      backdrop-filter: blur(14px);
+      border-radius: 30px;
+      padding: 15px 20px;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+      max-width: 550px;
+      width: 100%;
+    }
+    .input-field {
+      flex: 1;
+      background: transparent;
+      border: none;
+      outline: none;
+      font-size: 1.3rem;
+      color: #ffffff;
+      margin-right: 10px;
+    }
+    .icon-button {
+      border: none;
+      background: transparent;
+      cursor: pointer;
+      margin: 0 5px;
+      padding: 0;
+      transition: transform 0.2s;
+      width: 36px;
+      height: 36px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .icon-button:hover {
+      transform: scale(1.15);
+    }
+    .icon {
+      width: 100%;
+      height: 100%;
+      fill: #fff;
+      filter: drop-shadow(0 0 3px rgba(0,0,0,0.3));
+    }
+    /* Responsive Adjustments */
+    @media (max-width: 768px) {
+      .container {
+        flex-direction: column;
+        justify-content: center;
+        height: 80%;
+      }
+      spline-viewer.spline-viewer {
+        position: relative;
+        top: auto;
+        transform: none;
+        width: 300px;
+        height: 300px;
+        margin: 20px auto;
+      }
+      .left-panel {
+        align-items: center;
+        text-align: center;
+      }
+      .bot-bubble {
+        font-size: 1.8rem;
+        margin-bottom: 20px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <!-- Spline viewer replaces the previous swirl-shape -->
+    <spline-viewer class="spline-viewer" url="https://prod.spline.design/1oTOYWSdzsWipF2Z/scene.splinecode"></spline-viewer>
+    
+    <!-- Left Panel with Dynamic Bot Bubble and Input -->
+    <div class="left-panel">
+      <div class="bot-bubble" id="botBubble">
+        “Hi, may I know your name?”
+      </div>
+      <div class="input-bubble">
+        <!-- Send Button (Arrow Icon) -->
+        <button class="icon-button" id="sendButton" title="Send">
+          <svg class="icon" viewBox="0 0 24 24">
+            <path d="M2,21L23,12L2,3V10L17,12L2,14V21Z" />
+          </svg>
+        </button>
+        <!-- Text Input -->
+        <input type="text" class="input-field" id="textInput" placeholder="Type your response..." />
+        <!-- Mic Button (Voice Input) -->
+        <button class="icon-button" id="micButton" title="Voice Input">
+          <svg class="icon" viewBox="0 0 24 24">
+            <path d="M12,14A3,3 0 0,0 15,11V5A3,3 0 0,0 9,5V11A3,3 0 0,0 12,14M19,11A7,7 0 0,1 12,18A7,7 0 0,1 5,11H3A9,9 0 0,0 12,20A9,9 0 0,0 21,11H19Z" />
+          </svg>
+        </button>
+      </div>
+    </div>
+  </div>
+  
+  <!-- External Libraries -->
+  <script src="https://cdn.socket.io/4.6.0/socket.io.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/dompurify@3.0.5/dist/purify.min.js"></script>
+  
+  <script>
+    // Establish Socket.IO connection (ensure your backend is running)
+    const socket = io();
+
+    // Element references
+    const sendButton = document.getElementById('sendButton');
+    const micButton  = document.getElementById('micButton');
+    const textInput  = document.getElementById('textInput');
+    const botBubble  = document.getElementById('botBubble');
+
+    // Send message function
+    function sendMessage() {
+      const message = textInput.value.trim();
+      if (message) {
+        socket.emit('astro_message', { message: message });
+        console.log("Sent message:", message);
+        textInput.value = '';
+      }
+    }
+    
+    sendButton.addEventListener('click', sendMessage);
+    textInput.addEventListener('keypress', (e) => {
+      if (e.key === 'Enter' && !e.shiftKey) {
+        e.preventDefault();
+        sendMessage();
+      }
+    });
+
+    // Speech Recognition
+    const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+    const recognition = SpeechRecognition ? new SpeechRecognition() : null;
+    if (recognition) {
+      recognition.lang = "en-IN";
+      recognition.interimResults = false;
+      recognition.onresult = function(event) {
+        const transcript = event.results[0][0].transcript;
+        socket.emit('astro_message', { message: transcript });
+        console.log("Recognized speech:", transcript);
+      };
+      recognition.onerror = function(e) {
+        console.error("Speech recognition error:", e);
+      };
+    }
+    micButton.addEventListener('click', () => {
+      if (recognition) {
+        recognition.start();
+        console.log("Speech recognition started.");
+      } else {
+        alert("Speech recognition not supported in this browser.");
+      }
+    });
+
+    // Receive bot's response and animate the bot bubble text
+    socket.on('astro_response', (data) => {
+      const botText = data.message || data;
+      botBubble.textContent = "";  // Clear text first
+      void botBubble.offsetWidth;  // Trigger reflow for animation reset
+      botBubble.textContent = botText;
+      botBubble.classList.add("fade-in");
+      setTimeout(() => {
+        botBubble.classList.remove("fade-in");
+      }, 2000);
+    });
+  </script>
+  
+  <!-- Fade-in CSS (can also be placed in <style> above) -->
+  <style>
+    @keyframes textFadeIn {
+      from { opacity: 0; transform: translateX(-20px); }
+      to   { opacity: 1; transform: translateX(0); }
+    }
+    .fade-in {
+      animation: textFadeIn 2s ease-out;
+    }
+  </style>
+</body>
+</html>

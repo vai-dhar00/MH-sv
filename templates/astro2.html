@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Astro - Next-Gen Mental Health Chatbot</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <!-- Futuristic font -->
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&display=swap" rel="stylesheet">
+  
+  <style>
+    /* Basic resets */
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html, body { height: 100%; font-family: 'Orbitron', sans-serif; }
+    body {
+      background: linear-gradient(135deg, #3c1d5e 0%, #2b316d 100%);
+      display: flex; align-items: center; justify-content: center;
+      overflow: hidden; color: #ffffff;
+    }
+    .container {
+      position: relative; width: 90%; max-width: 1200px; height: 70%; min-height: 500px;
+      display: flex; align-items: center; justify-content: flex-start;
+    }
+    .swirl-shape { position: absolute; right: 0; top: 50%; transform: translateY(-50%);
+      width: 450px; height: 450px; overflow: hidden; pointer-events: none;
+    }
+    .swirl-shape::before { content: ""; position: absolute; inset: 0; border-radius: 50%;
+      background:
+        radial-gradient(circle at 50% 50%, rgba(255,80,220,0.4) 0%, rgba(130,30,200,0.1) 70%, transparent 90%),
+        conic-gradient(
+          from 90deg,
+          rgba(204,64,229,1),
+          rgba(219,5,165,1) 20%,
+          rgba(150,0,214,1) 40%,
+          rgba(255,0,127,1) 60%,
+          rgba(160,32,240,1) 80%,
+          rgba(130,0,180,1) 100%
+        );
+      animation: swirlRotate 5s linear infinite;
+    }
+    @keyframes swirlRotate { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+    .left-panel { display: flex; flex-direction: column; align-items: flex-start;
+      z-index: 2; max-width: 600px; padding: 20px;
+    }
+    .bot-bubble {
+      font-size: 2.4rem; font-weight: 400; line-height: 1.2;
+      margin-bottom: 40px; color: #f0f0f0;
+      background: rgba(255,255,255,0.15); backdrop-filter: blur(14px);
+      border-radius: 20px; padding: 20px 25px;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+      min-height: 80px; display: flex; align-items: center;
+    }
+    .input-bubble {
+      display: flex; align-items: center;
+      background: rgba(255,255,255,0.2); backdrop-filter: blur(14px);
+      border-radius: 30px; padding: 15px 20px;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+      max-width: 550px; width: 100%;
+    }
+    .input-field { flex: 1; background: transparent; border: none; outline: none;
+      font-size: 1.3rem; color: #ffffff; margin: 0 10px;
+    }
+    .icon-button {
+      border: none; background: transparent; cursor: pointer;
+      margin: 0 5px; padding: 0; transition: transform 0.2s;
+      width: 36px; height: 36px; display: flex; align-items: center;
+      justify-content: center;
+    }
+    .icon-button:hover { transform: scale(1.15); }
+    .icon { width: 100%; height: 100%; fill: #fff; filter: drop-shadow(0 0 3px rgba(0,0,0,0.3)); }
+    @media (max-width: 768px) {
+      .container { flex-direction: column; justify-content: center; height: 80%; }
+      .swirl-shape { position: relative; width: 300px; height: 300px; margin: 20px auto; }
+      .left-panel { align-items: center; text-align: center; }
+      .bot-bubble { font-size: 1.8rem; margin-bottom: 20px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="swirl-shape"></div>
+    <div class="left-panel">
+      <div class="bot-bubble fade-in" id="botBubble">“Hi, may I know your name?”</div>
+      <div class="input-bubble">
+        <button class="icon-button" id="sendButton" title="Send">
+          <svg class="icon" viewBox="0 0 24 24"><path d="M2,21L23,12L2,3V10L17,12L2,14V21Z"/></svg>
+        </button>
+        <input type="text" class="input-field" id="textInput" placeholder="Type your response..." />
+        <button class="icon-button" id="micButton" title="Voice Input">
+          <svg class="icon" viewBox="0 0 24 24"><path d="M12,14A3,3 0 0,0 15,11V5A3,3 0 0,0 9,5V11A3,3 0 0,0 12,14M19,11A7,7 0 0,1 12,18A7,7 0 0,1 5,11H3A9,9 0 0,0 12,20A9,9 0 0,0 21,11H19Z"/></svg>
+        </button>
+        <!-- Download Log Button -->
+        <button class="icon-button" id="downloadLogButton" title="Download Conversation">
+          <svg class="icon" viewBox="0 0 24 24"><path d="M5,20h14v-2H5V20z M19,8h-4V4H9v4H5l7,7L19,8z"/></svg>
+        </button>
+      </div>
+    </div>
+  </div>
+  <script src="https://cdn.socket.io/4.6.0/socket.io.min.js"></script>
+  <script>
+    const socket = io();
+    const sendButton = document.getElementById('sendButton');
+    const micButton = document.getElementById('micButton');
+    const textInput = document.getElementById('textInput');
+    const botBubble = document.getElementById('botBubble');
+    const downloadLogButton = document.getElementById('downloadLogButton');
+    
+    // Conversation log storage
+    let conversationLog = [];
+    
+    function sendMessage() {
+      const message = textInput.value.trim();
+      if (!message) return;
+      socket.emit('astro_message', { message });
+      conversationLog.push(`You: ${message}`);
+      textInput.value = '';
+    }
+    sendButton.addEventListener('click', sendMessage);
+    textInput.addEventListener('keypress', e => {
+      if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendMessage(); }
+    });
+    
+    // Speech recognition
+    const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+    const recognition = SpeechRecognition ? new SpeechRecognition() : null;
+    if (recognition) {
+      recognition.lang = 'en-IN'; recognition.interimResults = false;
+      recognition.onresult = event => {
+        const transcript = event.results[0][0].transcript;
+        socket.emit('astro_message', { message: transcript });
+        conversationLog.push(`You: ${transcript}`);
+      };
+      recognition.onerror = e => console.error('Speech error', e);
+    }
+    micButton.addEventListener('click', () => {
+      if (recognition) recognition.start(); else alert('Speech not supported');
+    });
+    
+    socket.on('astro_response', data => {
+      const botText = data.message || data;
+      botBubble.textContent = botText;
+      botBubble.classList.add('fade-in');
+      setTimeout(() => botBubble.classList.remove('fade-in'), 2000);
+      conversationLog.push(`Astro: ${botText}`);
+    });
+    
+    // Download conversation to text file
+    downloadLogButton.addEventListener('click', () => {
+      const blob = new Blob([conversationLog.join('\n')], { type: 'text/plain' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a'); a.href = url; a.download = 'astro_conversation.txt';
+      document.body.appendChild(a); a.click(); document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+    });
+  </script>
+  <style>
+    @keyframes textFadeIn { from { opacity: 0; transform: translateX(-20px); } to { opacity: 1; transform: translateX(0); } }
+    .fade-in { animation: textFadeIn 2s ease-out; }
+  </style>
+</body>
+</html>
