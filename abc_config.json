@@ -1,6 +1,6 @@
 {
-    "openai_api_key": "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",
-    "assistant_id": "asst_ZJDJQcBNIhcX61KRjFlMee7r",
+    "openai_api_key": "********", (add your own openai_api_key)
+    "assistant_id": "**********", (add your own/ i am not using it for the RAG based model)
     "bot_name": "Astro",
     "theme": {
         "default_mode": "light",
